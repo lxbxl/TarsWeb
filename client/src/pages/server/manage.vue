@@ -148,7 +148,7 @@
             :placeholder="$t('serverList.dlg.placeholder.thread')"
             required
             :pattern="configModal.model.server_type === 'tars_nodejs' ? '^[1-9][0-9]*$' : '^([3-9]|[1-9][0-9]+)$'"
-            pattern-tip="$t('serverList.dlg.placeholder.thread')"
+            :pattern-tip="$t('serverList.dlg.placeholder.thread')"
           ></let-input>
         </let-form-item>
         <let-form-item :label="$t('serverList.dlg.defaultPath')">
@@ -239,7 +239,6 @@
             v-model="servantDetailModal.model.obj_name"
             :placeholder="$t('serverList.servant.c')"
             required
-            pattern="^[A-Za-z]+$"
             :pattern-tip="$t('serverList.servant.obj')"
           ></let-input>
         </let-form-item>
@@ -901,13 +900,16 @@ export default {
   mounted() {
     this.getServerList();
     this.getServerNotifyList(1);
-    //同时只更新一个
-    if(window.__GET_NOTIFY_TIMER){
-      clearTimeout(window.__GET_NOTIFY_TIMER)
-    }
-    window.__GET_NOTIFY_TIMER = setInterval(()=>{
-      this.getServerNotifyList();
-    }, 1000);
+  },
+  beforeRouteEnter (to, from, next) {
+    next(next(vm => {
+      vm.getServerNotifyList(1);
+    }))
+  },
+  beforeRouteUpdate (to, from, next) {
+     next(next(vm => {
+      vm.getServerNotifyList(1);
+    }))
   },
   linkDownload (url) {
       window.open(url,'_blank') // 新窗口打开外链接

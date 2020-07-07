@@ -28,6 +28,7 @@ const PatchController = require('../controller/patch/PatchController');
 const MonitorController = require('../controller/monitor/MonitorController');
 const TemplateController = require('../controller/template/TemplateController');
 const ResourceController = require('../controller/resource/ResourceController');
+const GatewayController = require('../controller/gateway/GatewayController');
 
 const AuthController = require('../controller/auth/AuthController');
 const LoginController = require('../controller/login/LoginController');
@@ -165,7 +166,7 @@ const apiConf = [
     ['get', '/get_compile_conf', PatchController.getCompilerConf],
     ['post', '/delete_patch_package', PatchController.deletePatchPackage],
     ['post', '/set_patch_package_default', PatchController.setPatchPackageDefault],
-    ['get', '/has_dcahce_patch_package', PatchController.hasDcahcePatchPackage],
+    ['get', '/has_dcache_patch_package', PatchController.hasDcachePatchPackage],
 
     // 监控
     ['get', '/tarsstat_monitor_data', MonitorController.tarsstat],
@@ -189,12 +190,70 @@ const apiConf = [
         profile: 'notEmpty'
     }],
 
+    //网关配置
+    ['get', '/station_list', GatewayController.getStationList], 
+    ['post', '/add_station', GatewayController.addStation,{
+        f_station_id: 'notEmpty',
+        f_name_cn: 'notEmpty'
+    }],
+    ['post', '/update_station', GatewayController.updateStation,{
+        f_id: 'notEmpty',
+        f_station_id: 'notEmpty',
+        f_name_cn: 'notEmpty'
+    }],
+    ['post', '/delete_station', GatewayController.deleteStation, { f_id: 'notEmpty' }],
+
+    ['get', '/upstream_list', GatewayController.getUpstreamList], 
+    ['post', '/add_upstream', GatewayController.addUpstream,{
+        f_upstream: 'notEmpty',
+        f_addr: 'notEmpty',
+        f_weight: 'notEmpty',
+        f_fusing_onoff: 'notEmpty'
+    }],
+    ['post', '/update_upstream', GatewayController.updateUpstream,{
+        f_id: 'notEmpty',
+        f_upstream: 'notEmpty',
+        f_addr: 'notEmpty',
+        f_weight: 'notEmpty',
+        f_fusing_onoff: 'notEmpty'
+    }],
+    ['post', '/delete_upstream', GatewayController.deleteUpstream, { f_id: 'notEmpty' }],
+
+    ['get', '/httprouter_list', GatewayController.getHttpRouterList, { f_id: 'f_station_id' }], 
+    ['post', '/add_httprouter', GatewayController.addHttpRouter,{
+        f_station_id: 'notEmpty',
+        f_path_rule: 'notEmpty',
+        f_proxy_pass: 'notEmpty'
+    }],
+    ['post', '/update_httprouter', GatewayController.updateHttpRouter,{
+        f_id: 'notEmpty',
+        f_station_id: 'notEmpty',
+        f_path_rule: 'notEmpty',
+        f_proxy_pass: 'notEmpty'
+    }],
+    ['post', '/delete_httprouter', GatewayController.deleteHttpRouter, { f_id: 'notEmpty' }],
+    
+    ['get', '/bwlist', GatewayController.getBWList, { 
+        type: 'notEmpty' 
+    }], 
+    ['post', '/add_bwlist', GatewayController.addBWList,{
+        f_ip: 'notEmpty',
+        type: 'notEmpty'
+    }],
+    ['post', '/delete_bwlist', GatewayController.deleteBWList, { f_id: 'notEmpty',type: 'notEmpty' }],
+    ['get', '/get_flowcontrol', GatewayController.getFlowControl, { f_station_id: 'notEmpty'}],
+    ['post', '/upsert_flowcontrol', GatewayController.upsertFlowControl, {
+        f_station_id: 'notEmpty',
+        f_duration: 'notEmpty',
+        f_max_flow: 'notEmpty'
+    }],
 
     //资源管理
     ['get', '/list_tars_node', ResourceController.listTarsNode],
     ['post', '/connect_tars_node', ResourceController.connectTarsNode],
     ['post', '/install_tars_nodes', ResourceController.installTarsNodes],
     ['get', '/uninstall_tars_nodes', ResourceController.uninstallTarsNodes, { ips: 'notEmpty' }],
+    ['get', '/uninstall_tars_node', ResourceController.uninstallTarsNode, { node_name: 'notEmpty' }],
     ['get', '/check_tars_node', ResourceController.checkTarsNode, { node_name: 'notEmpty' }],
 
     //权限管理
@@ -237,6 +296,15 @@ const apiConf = [
     }],
     ['get', '/delete_tars_file', InfTestController.deleteTarsFile, { id: 'notEmpty' }],
     ['get', '/get_structs', InfTestController.getStructs, { id: 'notEmpty', module_name: 'notEmpty' }],
+    ['get', '/get_benchmark_des', InfTestController.getBenchmarkDes, { id: 'notEmpty'}],
+    ['get', '/get_bm_case_list', InfTestController.getBmCaseList, { servant: 'notEmpty', fn: 'notEmpty'}],
+    ['get', '/get_bm_result_by_id', InfTestController.getBmResultById, { id: 'notEmpty'}],
+    ['post', '/upsert_bm_case', InfTestController.upsertBmCase, { servant: 'notEmpty', fn: 'notEmpty'}],
+    ['post', '/start_bencmark', InfTestController.startBencmark, { servant: 'notEmpty', fn: 'notEmpty'}],
+    ['post', '/stop_bencmark', InfTestController.stopBencmark, { servant: 'notEmpty', fn: 'notEmpty'}],
+    ['post', '/test_bencmark', InfTestController.testBencmark, { servant: 'notEmpty', fn: 'notEmpty'}],
+    ['get', '/get_endpoints', InfTestController.getEndpoints, { servant: 'notEmpty'}],
+    ['get', '/is_benchmark_installed', InfTestController.isBenchmarkInstalled],
     ['get', '/logview_list', LogviewController.getLogFileList, { application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty' }],
     ['get', '/logview_data', LogviewController.getLogData, { application: 'notEmpty', server_name: 'notEmpty', node_name: 'notEmpty', log_file: 'notEmpty', interface_params: 'notEmpty' }],
 ];

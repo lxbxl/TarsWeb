@@ -378,6 +378,7 @@
     "systemError": "系统内部错误",
     "noPrivilage": "没有权限",
     "notEmpty": "不能为空",
+    "mustUnique": "数据已存在",
     "needNumber": "必须为数字",
     "needArray": "必须为数组",
     "needObject": "必须为对象",
@@ -404,6 +405,8 @@
     "stop": "停止",
     "add": "添加",
     "manage": "管理",
+    "config": "配置",
+    "modify": "修改",
     "delete": "删除",
     "more": "更多命令",
     "operates": "操作",
@@ -445,10 +448,14 @@
         "present_state": "当前状态",
         "tars_version": "版本",
         "load_avg5": "负载",
-        "check": "检查"
-      }
+        "check": "操作"
+      },
+      "check": "检查",
+      "delete": "删除"
     },
-    "checkNode": "检查节点联通性"
+    "checkNode": "检查节点联通性",
+    "deleteNode": "删除节点",
+    "confirmDeleteNode": "确认删除节点吗? <br>请先在节点机上停止节点, 并下线节点上的服务"
   },
   "serverList": {
     "title": {
@@ -537,7 +544,7 @@
       "notStart": "未开始",
       "running": "运行中",
       "success": "成功",
-      "failed": "失败 (服务管理界面查看原因) ",
+      "failed": "失败",
       "cancel": "取消",
       "parial": "部分成功",
       "restartFailed": "重启失败",
@@ -713,7 +720,8 @@
       "template": "模板管理",
       "apply": "部署申请",
       "nodes": "节点管理",
-      "check": "框架检查"
+      "check": "框架检查",
+      "gateway": "网关配置"
     },
     "form": {
       "app": "应用",
@@ -776,12 +784,35 @@
     "runuser": "运行用户",
     "runuserTips": "运行用户不能为空",
     "btn": {
-      "addNode": "安装节点",
+      "manualAddNode": "手工安装节点",
+      "autoAddNode": "自动安装节点",
       "check": "点击开始检查框架状态"
+    },
+    "manualAddNode": {
+      "title": "操作步骤",
+      "info1": "注意1: ${webhost}是web平台地址, ${localip}是节点机ip",
+      "info2": "注意2: web平台上只有框架对应编译平台的安装包, 其他OS的安装包需要自己手工编译",
+      "OS1" : {
+        "title" : "Linux/Mac",
+        "step1": "在节点机上运行: wget http://${webhost}/get_tarsnode?ip=${localip} -O install_tarsnode.sh",
+        "step2": "mkdir -p /usr/local/app/tars/tarsnode",
+        "step3": "运行: sh install_tarsnode.sh",
+        "step4": "crontab中增加监控: * * * * * /usr/local/app/tars/tarsnode/util/monitor.sh",
+        "step5": "完成安装, 安装目录: /usr/local/app/tars/"
+      },
+      "OS2": {
+        "title": "Windows",
+        "step1": "在节点机上打开浏览器: http://${webhost}/get_tarsnode?ip=${localip}",
+        "step2": "将输出保存为: install_tarsnode.sh",
+        "step3": "在节点机上下载busybox: http://${webhost}/files/busybox.exe",
+        "step4": "window命令行运行: busybox.exe install_tarsnode.sh",
+        "step5": "windows计划任务中增加监控:  c:\\tars-install\\tars\\tarsnode\\util\\monitor.bat",
+        "step6": "完成安装, 缺省目录: c:\\tars-install\\tars"
+      } 
     },
     "add": {
       "nodeNameTips": "节点名不能为空",
-      "title": "安装节点"
+      "title": "安装节点(暂不支持Windows)"
     }
   },
   "connectNodeList": {
@@ -873,6 +904,75 @@
       "title": "删除模板"
     }
   },
+  "gateway":{
+    "station":"站点配置",
+    "upstream":"upstream配置",
+    "globalblack":"全局黑名单配置",
+    "stationId":"站点ID",
+    "stationName":"站点名",
+    "monitorUrl":"监控URL",
+    "serverName":"服务名",
+    "pathRule":"路径规则",
+    "proxyPass":"ProxyPass",
+    "addr":"地址",
+    "weight":"权重",
+    "fusing":"熔断",
+    "fusingOn":"开启",
+    "fusingOff":"关闭",
+    "lastUpdate":"更新时间",
+    "btn":{
+      "addGateway": "新增站点",
+      "addUpstream": "新增Upstream",
+      "addHttpRouter": "新增路由"
+    },
+    "add": {
+      "stationNameTips": "请输入站点名",
+      "idFormatTips": "站点ID只能包含英文字母、数字、点、下划线，并以字母开头，不能以Obj结尾",
+      "monitorUrlTips": "请输入监控URL",
+      "upstreamFormatTips":"upstream只能包含英文字母、数字、下划线，以字母开头，不能以Obj结尾",
+      "addrFormatTips":"请输入ip:port",
+      "weightFormatTips":"请输入权重值",
+      "serverNameTip":"支持通配符、正则表达式，为空则全匹配",
+      "pathRuleTip":"请输入路径匹配规则",
+      "proxyPassTip":"请输入ProxyPass，支持ip:port / upstream / tars obj 三种方式",
+      "title": "新增站点",
+      "upstream": "新增Upstream"
+    },
+    "update": {
+      "title": "编辑站点",
+      "routerTitle": "编辑路由",
+      "upstream": "编辑Upstream",
+      "errTips": "编辑失败"
+    },
+    "delete": {
+      "confirmTips": "您确定要删除这个站点吗",
+      "upstreamConfirmTips": "您确定要删除这个upstream吗",
+      "bwListConfirmTips": "您确定要删除这条黑/白名单配置吗",
+      "deleteUpstreamErrorTip":"删除失败，仍有关联的Router或者资源不存在",
+      "title": "删除站点"
+    },
+    "config":{
+      "title":"网关配置"
+    },
+    "bwlist":{
+      "title":{
+        "black":"黑名单",
+        "white":"白名单"
+      },
+      "ipTip":"请输入IP地址（支持通配符）"
+    },
+    "flowControl":{
+      "title":"流量控制",
+      "duration":"时间窗口(s)",
+      "durationTip":"请输入时间窗口秒数",
+      "maxFlow":"最大流量",
+      "maxFlowTip":"请输入时间窗口内最大流量",
+      "tip":"即在'时间窗口'的时间内，最多请求'最大流量'次，超出的流量会被拒绝"
+    },
+    "router":{
+      "title":"路由配置"
+    }
+  },
   "serviceExpand": {
     "title": "服务扩容",
     "form": {
@@ -945,7 +1045,11 @@
   },
   "inf": {
     "list": {
-      "debug": "调试"
+      "debug": "调试",
+      "benchmark":"压测"
+    },
+    "error":{
+      "parseFail":"协议解析失败"
     },
     "title": {
       "listTitle": "tars文件列表",
@@ -958,6 +1062,59 @@
       "tarsFile": "tars文件",
       "deleteMsg": "您确定要删除吗？",
       "objName": "Servant名"
+    },
+    "benchmark":{
+      "inParam": "入参结构",
+      "outParam": "出参结构",
+      "fnlist":"函数列表",
+      "nofn":"无函数记录",
+      "interface":"接口",
+      "fnname":"函数名",
+      "returnType":"返回类型",
+      "case":"用例",
+      "addCase":"添加用例",
+      "caselist":"用例列表",
+      "nocase":"无用例记录",
+      "des":"描述",
+      "inputValue":"输入参数",
+      "modifyCase":"修改",
+      "testCase":"测试",
+      "runCase":"压测",
+      "viewResult":"查看结果",
+      "deleteCase":"删除",
+      "inputValueDes":"输入参数生成说明",
+      "bmParams":"压测参数",
+      "endpoints":"endpoints",
+      "endpointsTip":"其它(例如：tcp -h 192.168.10.4 -t 60000 -p 3031，多个以换行分隔)",
+      "infTest":"接口测试",
+      "cancelTest":"取消",
+      "links":"单endpoint连接数",
+      "speed":"单endpoint速率",
+      "duration":"压测时长(s)",
+      "testResult":"压测结果",
+      "startBenchmark":"开始压测",
+      "stopBenchmark":"停止压测",
+      "refresh":"刷新",
+      "detail":"详细指标",
+      "stat":"区间分布",
+      "retStat":"返回值分布",
+      "costStat":"耗时区间分布",
+      "time":"时间",
+      "total":"总量",
+      "success":"成功",
+      "fail":"失败",
+      "successRate":"成功率",
+      "maxCost":"最大耗时(s)",
+      "minCost":"最小耗时(s)",
+      "avgCost":"平均耗时(s)",
+      "sendBytes":"发送字节",
+      "recvBytes":"接收字节",
+      "deleteCaseConfirm":"确认删除此用例？",
+      "installBenchmark":"请安装压测服务",
+      "installTip":"使用压测工具前，需要先安装压测服务组件",
+      "installTutorial":"安装教程",
+      "installScript":"一键安装"
+
     }
   },
   "publishLog": {
